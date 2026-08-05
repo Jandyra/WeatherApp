@@ -1,7 +1,6 @@
 package com.example.weatherapp
 
 import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -10,13 +9,14 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -34,14 +34,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.weatherapp.ui.theme.WeatherAppTheme
 
-class LoginActivity : ComponentActivity() {
+class RegisterActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             WeatherAppTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    LoginPage(modifier = Modifier.padding(innerPadding))
+                    RegisterPage(modifier = Modifier.padding(innerPadding))
                 }
             }
         }
@@ -50,19 +50,30 @@ class LoginActivity : ComponentActivity() {
 
 @Preview(showBackground = true)
 @Composable
-fun LoginPage(modifier: Modifier = Modifier) {
+fun RegisterPage(modifier: Modifier = Modifier) {
+    var name by rememberSaveable { mutableStateOf("") }
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
+    var confirmPassword by rememberSaveable { mutableStateOf("") }
     val activity = LocalActivity.current as Activity
     val modifier = modifier.fillMaxWidth(fraction = 0.9f)
+
     Column(
-        modifier = modifier.padding(24.dp).fillMaxSize(),
+        modifier = modifier.padding(24.dp).fillMaxSize()
+            .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "Bem-vindo/a!",
+            text = "Criar conta",
             fontSize = 24.sp
+        )
+        Spacer(modifier = modifier.size(12.dp))
+        OutlinedTextField(
+            value = name,
+            label = { Text(text = "Digite seu nome") },
+            modifier = modifier,
+            onValueChange = { name = it }
         )
         Spacer(modifier = modifier.size(12.dp))
         OutlinedTextField(
@@ -80,42 +91,35 @@ fun LoginPage(modifier: Modifier = Modifier) {
             visualTransformation = PasswordVisualTransformation()
         )
         Spacer(modifier = modifier.size(12.dp))
+        OutlinedTextField(
+            value = confirmPassword,
+            label = { Text(text = "Repita sua senha") },
+            modifier = modifier,
+            onValueChange = { confirmPassword = it },
+            visualTransformation = PasswordVisualTransformation()
+        )
+        Spacer(modifier = modifier.size(12.dp))
         Row(
-            modifier = modifier.padding(12.dp).fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(4.dp)
+            modifier = modifier.padding(12.dp).fillMaxSize(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Button(
                 onClick = {
-                    Toast.makeText(activity, "Login OK!", Toast.LENGTH_LONG).show()
-                    activity.startActivity(
-                        Intent(activity, MainActivity::class.java).setFlags(
-                            Intent.FLAG_ACTIVITY_SINGLE_TOP
-                        )
-                    )
+                    Toast.makeText(activity, "Registro OK!", Toast.LENGTH_LONG).show()
+                    activity.finish()
                 },
-                enabled = email.isNotEmpty() && password.isNotEmpty(),
-                modifier = Modifier.weight(1f),
-                contentPadding = PaddingValues(horizontal = 4.dp, vertical = 8.dp)
+                enabled = name.isNotEmpty() && email.isNotEmpty() &&
+                        password.isNotEmpty() && confirmPassword.isNotEmpty() &&
+                        password == confirmPassword
             ) {
-                Text("Login", maxLines = 1, fontSize = 13.sp)
-            }
-            Button(
-                onClick = { email = ""; password = "" },
-                modifier = Modifier.weight(1f),
-                contentPadding = PaddingValues(horizontal = 4.dp, vertical = 8.dp)
-            ) {
-                Text("Limpar", maxLines = 1, fontSize = 13.sp)
+                Text("Registrar")
             }
             Button(
                 onClick = {
-                    activity.startActivity(
-                        Intent(activity, RegisterActivity::class.java)
-                    )
-                },
-                modifier = Modifier.weight(1f),
-                contentPadding = PaddingValues(horizontal = 4.dp, vertical = 8.dp)
+                    name = ""; email = ""; password = ""; confirmPassword = ""
+                }
             ) {
-                Text("Registrar", maxLines = 1, fontSize = 13.sp)
+                Text("Limpar")
             }
         }
     }
