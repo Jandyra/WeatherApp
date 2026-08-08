@@ -1,6 +1,5 @@
 package com.example.weatherapp.ui.screens
 
-import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
@@ -21,7 +20,6 @@ import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
 
-@SuppressLint("UnrememberedMutableState")
 @Composable
 fun MapPage(
     modifier: Modifier = Modifier,
