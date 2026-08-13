@@ -1,8 +1,5 @@
 package com.example.weatherapp.ui.screens
 
-import android.app.Activity
-import android.widget.Toast
-import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -26,14 +23,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.weatherapp.MainViewModel
 import com.example.weatherapp.model.City
+import com.example.weatherapp.model.Weather
 
 @Composable
 fun CityItem(
     city: City,
+    weather: Weather,
     onClick: () -> Unit,
     onClose: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val desc = if (weather == Weather.LOADING) "Carregando clima..." else weather.desc
     Row(
         modifier = modifier.fillMaxWidth().padding(8.dp).clickable { onClick() },
         verticalAlignment = Alignment.CenterVertically
@@ -51,7 +51,7 @@ fun CityItem(
             )
             Text(
                 modifier = Modifier,
-                text = city.weather ?: "Carregando clima...",
+                text = desc,
                 fontSize = 16.sp
             )
         }
@@ -67,7 +67,6 @@ fun ListPage(
     viewModel: MainViewModel
 ) {
     val cityList = viewModel.cities
-    val activity = LocalActivity.current as Activity
 
     LazyColumn(
         modifier = modifier
@@ -77,11 +76,12 @@ fun ListPage(
         items(cityList, key = { it.name }) { city ->
             CityItem(
                 city = city,
+                weather = viewModel.weather(city.name),
                 onClose = {
                     viewModel.remove(city)
                 },
                 onClick = {
-                    Toast.makeText(activity, "Clicou em ${city.name}", Toast.LENGTH_SHORT).show()
+                    viewModel.city = city.name
                 }
             )
         }
