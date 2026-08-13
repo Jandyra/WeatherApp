@@ -18,4 +18,8 @@ interface WeatherServiceAPI {
     // Busca o clima atual da cidade
     @GET("current.json?key=$API_KEY&lang=pt")
     fun weather(@Query("q") query: String): Call<APICurrentWeather?>
+
+    // Busca a previsão do tempo para os próximos 10 dias
+    @GET("forecast.json?key=$API_KEY&days=10&lang=pt")
+    fun forecast(@Query("q") name: String): Call<APIWeatherForecast?>
 }
