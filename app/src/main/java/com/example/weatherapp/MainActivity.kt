@@ -46,7 +46,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             val navController = rememberNavController()
             val fbDB = remember { FBDatabase() }
-            val weatherService = remember { WeatherService() }
+            val weatherService = remember { WeatherService(this) }
             val viewModel: MainViewModel = viewModel(
                 factory = MainViewModelFactory(fbDB, weatherService)
             )
