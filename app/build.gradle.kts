@@ -81,4 +81,6 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-gson:3.0.0")
     // Coil
     implementation("io.coil-kt:coil-compose:2.7.0")
+    // WorkManager
+    implementation("androidx.work:work-runtime-ktx:2.10.5")
 }

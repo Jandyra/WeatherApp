@@ -12,6 +12,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.outlined.Notifications
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -46,6 +50,10 @@ fun HomePage(modifier: Modifier = Modifier, viewModel: MainViewModel) {
         } else {
             val name = viewModel.city!!
             val weather = viewModel.weather(name)
+            val city = viewModel.cities.find { it.name == name }
+            val icon = if (city?.isMonitored == true)
+                Icons.Filled.Notifications else Icons.Outlined.Notifications
+
             Row {
                 AsyncImage(
                     model = weather.imgUrl,
@@ -55,7 +63,19 @@ fun HomePage(modifier: Modifier = Modifier, viewModel: MainViewModel) {
                 )
                 Column {
                     Spacer(modifier = modifier.size(12.dp))
-                    Text(text = name, fontSize = 28.sp)
+                    Row {
+                        Text(text = name, fontSize = 28.sp)
+                        Spacer(modifier = modifier.size(8.dp))
+                        Icon(
+                            imageVector = icon,
+                            contentDescription = "Monitorada?",
+                            modifier = Modifier.size(32.dp).clickable {
+                                city?.let {
+                                    viewModel.update(city = it.copy(isMonitored = !it.isMonitored))
+                                }
+                            }
+                        )
+                    }
                     Spacer(modifier = modifier.size(12.dp))
                     Text(text = weather.desc, fontSize = 22.sp)
                     Spacer(modifier = modifier.size(12.dp))
